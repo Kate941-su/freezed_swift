@@ -2,14 +2,13 @@ import FreezedMacro
 import Foundation
 
 @Freezed
-final class User {
+final class User: Hashable {
     let id: Int
     let name: String
     let url: URL
     let optionalUrl: URL?
     let optionalName:String?
     let optionalId: Int?
-    
     // マクロが依存する全プロパティを受け取るイニシャライザ
     // ※ 実際のマクロを使うにはこれが必須です。
     init(
@@ -26,7 +25,8 @@ final class User {
         self.optionalUrl = optionalUrl
         self.optionalName = optionalName
         self.optionalId = optionalId
-    }
+    }    
+    
 }
 
 func main() {

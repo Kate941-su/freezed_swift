@@ -11,7 +11,6 @@ public struct CopyableMacro: MemberMacro {
             in context: some MacroExpansionContext
         ) throws -> [DeclSyntax] {
             // A: Generate copyWith method
-            
             // 1. Get stored properties list
             let properties = declaration.memberBlock.members.compactMap { member -> (name: TokenSyntax, type: TypeSyntax, isOptional: Bool)? in
                 guard let varDecl = member.decl.as(VariableDeclSyntax.self),
@@ -22,7 +21,6 @@ public struct CopyableMacro: MemberMacro {
                 else {
                     return nil
                 }
-                // `static` プロパティは除外
                 if varDecl.modifiers.contains(where: { $0.name.tokenKind == .keyword(.static) }) {
                     return nil
                 }
@@ -44,7 +42,6 @@ public struct CopyableMacro: MemberMacro {
             
             // 3: Generate initialiser with arguments
             let initializerArgs: [String] = properties.map { property in
-                // nil合体演算子 (??) を使用して、渡された引数か既存の値を使用
                 return "\(property.name.text): \(property.name.text) ?? self.\(property.name.text)"
             }
             let arguments = initializerArgs.joined(separator: ", \n")
@@ -58,7 +55,7 @@ public struct CopyableMacro: MemberMacro {
                 throw NSError()
             }
             
-            // 5: Generate the Equtable method
+            // 4: Generate the Equtable method
             var equtableString: String = ""
             let length = properties.count
             for i in 0..<length {
@@ -68,7 +65,19 @@ public struct CopyableMacro: MemberMacro {
                     equtableString += "lhs.\(properties[i].name.text) == rhs.\(properties[i].name.text) && "
                 }
             }
-            // 6: Generate the final method
+
+            var hashValueString: String = ""
+            properties.forEach { property in
+                hashValueString += "hasher.combine(\(property.name.text))\n"
+            }
+            
+            // 2: Generate arguments list
+            let hashMethod: DeclSyntax = """
+                func hash(into hasher: inout Hasher) {
+                    \(raw: hashValueString)
+                }
+            """
+            // 5: Generate the final method
             let copyMethod: DeclSyntax =
             """
             public func copyWith(
@@ -86,7 +95,7 @@ public struct CopyableMacro: MemberMacro {
             }
             """
             
-            return [copyMethod, equtableMethod]
+            return [copyMethod, equtableMethod, hashMethod]
         }
 }
 
