@@ -7,6 +7,7 @@ A Swift macro library inspired by [Dart's Freezed package](https://pub.dev/packa
 - 🚀 **Automatic Code Generation**: Generate boilerplate code for immutable data classes
 - 📋 **Copy Methods**: Create `copyWith` methods for easy object copying with selective property updates
 - ⚖️ **Equality Support**: Automatic `Equatable` conformance with `==` operator implementation
+- 🔑 **Hashable Support**: Automatic `Hashable` conformance with `hash(into:)` method implementation
 - 🔒 **Immutable by Design**: Encourages immutable data structures following functional programming principles
 - 🎯 **Type Safety**: Full Swift type safety with compile-time code generation
 
@@ -98,6 +99,18 @@ static func == (lhs: User, rhs: User) -> Bool {
 }
 ```
 
+#### 3. Hash Function
+```swift
+func hash(into hasher: inout Hasher) {
+    hasher.combine(id)
+    hasher.combine(name)
+    hasher.combine(email)
+    hasher.combine(isActive)
+    hasher.combine(createdAt)
+    hasher.combine(optionalBio)
+}
+```
+
 ### Usage Examples
 
 #### Creating and Copying Objects
@@ -127,16 +140,26 @@ let deactivatedUser = user.copyWith(
 let userWithNewEmail = user.copyWith(email: "newemail@example.com")
 ```
 
-#### Equality Comparison
+#### Equality and Hash Comparison
 
 ```swift
 let user1 = User(id: 1, name: "John", email: "john@example.com", isActive: true, createdAt: Date(), optionalBio: nil)
 let user2 = User(id: 1, name: "John", email: "john@example.com", isActive: true, createdAt: Date(), optionalBio: nil)
 
 print(user1 == user2) // true
+print(user1.hashValue == user2.hashValue) // true
 
 let user3 = user1.copyWith(name: "Jane")
 print(user1 == user3) // false
+print(user1.hashValue == user3.hashValue) // false
+
+// Using in Sets and Dictionaries
+var userSet: Set<User> = [user1, user2] // Only one user in set (duplicates removed)
+print(userSet.count) // 1
+
+var userDict: [User: String] = [:]
+userDict[user1] = "Admin"
+print(userDict[user2]) // "Admin" (same hash and equality)
 ```
 
 ### Advanced Examples
@@ -226,6 +249,7 @@ The `@Freezed` macro analyzes your class or struct and:
 2. **Handles Optionality**: Preserves the original optionality of properties
 3. **Generates Copy Method**: Creates a `copyWith` method that allows selective property updates
 4. **Implements Equality**: Generates `Equatable` conformance with proper equality checking
+5. **Implements Hashing**: Generates `Hashable` conformance with proper hash function implementation
 
 ## Limitations
 
