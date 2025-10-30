@@ -71,13 +71,14 @@ public struct CopyableMacro: MemberMacro {
                 hashValueString += "hasher.combine(\(property.name.text))\n"
             }
             
-            // 2: Generate arguments list
+            // 5: Generate arguments list
             let hashMethod: DeclSyntax = """
                 func hash(into hasher: inout Hasher) {
                     \(raw: hashValueString)
                 }
             """
-            // 5: Generate the final method
+            
+            // 6: Generate the final method
             let copyMethod: DeclSyntax =
             """
             public func copyWith(
