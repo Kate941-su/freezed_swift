@@ -1,4 +1,4 @@
-# FreezedMacro
+# FreezedSwift
 
 A Swift macro library inspired by [Dart's Freezed package](https://pub.dev/packages/freezed) that automatically generates immutable data classes with copy methods and equality operators.
 
