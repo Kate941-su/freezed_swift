@@ -89,6 +89,16 @@ final class FreezedMacroTests: XCTestCase {
                 static func == (lhs: User, rhs: User) -> Bool {
                     lhs.id == rhs.id && lhs.name == rhs.name && lhs.url == rhs.url && lhs.optionalUrl == rhs.optionalUrl && lhs.optionalName == rhs.optionalName && lhs.optionalId == rhs.optionalId
                 }
+            
+                func hash(into hasher: inout Hasher) {
+                        hasher.combine(id)
+                        hasher.combine(name)
+                        hasher.combine(url)
+                        hasher.combine(optionalUrl)
+                        hasher.combine(optionalName)
+                        hasher.combine(optionalId)
+
+                    }
             }
             """,
             macros: testMacros
