@@ -44,6 +44,7 @@ final class FreezedMacroTests: XCTestCase {
             }
             """,
             expandedSource: """
+            
             final class User {
                 let id: Int
                 let name: String
@@ -66,6 +67,7 @@ final class FreezedMacroTests: XCTestCase {
                     self.optionalName = optionalName
                     self.optionalId = optionalId
                 }
+            
                 public func copyWith(
                     id: Int? = nil,
                     name: String? = nil,
@@ -83,6 +85,7 @@ final class FreezedMacroTests: XCTestCase {
                         optionalId: optionalId ?? self.optionalId
                     )
                 }
+            
                 static func == (lhs: User, rhs: User) -> Bool {
                     lhs.id == rhs.id && lhs.name == rhs.name && lhs.url == rhs.url && lhs.optionalUrl == rhs.optionalUrl && lhs.optionalName == rhs.optionalName && lhs.optionalId == rhs.optionalId
                 }
