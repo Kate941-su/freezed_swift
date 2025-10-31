@@ -29,8 +29,6 @@ public struct CopyableMacro: MemberMacro {
             }
             // 2: Generate arguments list
             let parameterList: [String] = properties.map { property in
-                // 型をOptionalにするために、既存の型に "?" を追加
-                print(property.name.text)
                 if property.isOptional {
                     return "\(property.name.text): \(property.type.description) = nil"
                 } else {
@@ -91,7 +89,7 @@ public struct CopyableMacro: MemberMacro {
             """
             
             let equtableMethod: DeclSyntax = """
-            static func == (lhs: User, rhs: User) -> Bool {
+            static func == (lhs: \(raw: declarationName), rhs: \(raw: declarationName)) -> Bool {
                 \(raw: equtableString)
             }
             """
