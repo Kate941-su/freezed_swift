@@ -12,10 +12,10 @@ final class User: Hashable {
     // マクロが依存する全プロパティを受け取るイニシャライザ
     // ※ 実際のマクロを使うにはこれが必須です。
     init(
-        id: Int,
-        name: String,
+        id: Int = 1,
+        name: String = "",
         url: URL,
-        optionalUrl: URL?,
+        optionalUrl: URL? = nil,
         optionalName: String?,
         optionalId: Int?
     ) {
