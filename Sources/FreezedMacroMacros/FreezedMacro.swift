@@ -21,9 +21,21 @@ public struct CopyableMacro: MemberMacro {
                 else {
                     return nil
                 }
+
+                if let accessorBlock = binding.accessorBlock {
+                    if let accessorList = accessorBlock.as(AccessorBlockSyntax.self) {
+                        return nil
+                    }
+                }
+
                 if varDecl.modifiers.contains(where: { $0.name.tokenKind == .keyword(.static) }) {
                     return nil
                 }
+    
+                if varDecl.modifiers.contains(where: { $0.name.tokenKind == .keyword(.private) }) {
+                    return nil
+                }
+                
                 let isOptional = type.is(OptionalTypeSyntax.self)
                 return (name: identifier, type: type, isOptional: isOptional)
             }
@@ -32,7 +44,7 @@ public struct CopyableMacro: MemberMacro {
                 if property.isOptional {
                     return "\(property.name.text): \(property.type.description) = nil"
                 } else {
-                    return "\(property.name.text): \(property.type.description)? = nil"
+                    return "\(property.name.text): \(property.type.description.replacing(" ", with: ""))? = nil"
                 }
 
             }
